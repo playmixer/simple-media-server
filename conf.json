@@ -1,5 +1,6 @@
 {
   "directory": "F:/Downloads/",
-  "host": "localhost",
-  "port": "8080"
+  "host": "192.168.0.12",
+  "port": "8080",
+  "extensions": ["mp4", "mkv", "mov", "wmv", "mpeg", "mpg", "avi", "rm", "ram", "ogg", "webm"]
 }

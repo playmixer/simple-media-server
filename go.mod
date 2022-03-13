@@ -1,4 +1,4 @@
-module github.com/playmixer/simple-media-server
+module simple-media-server
 
 go 1.17
 

@@ -1,1 +1,1 @@
-go run main.go server.go
+go run ./cmd/app/
