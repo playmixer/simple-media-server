@@ -5,3 +5,4 @@ Open in your browser and watch the video from your media server
 
 - configure conf.json
 - run
+- open in a browser
