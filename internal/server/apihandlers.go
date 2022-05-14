@@ -2,13 +2,13 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strings"
-
 	"simple-media-server/internal/apperror"
 	"simple-media-server/pkg/utils"
+	"strings"
 )
 
 type Path struct {
@@ -20,11 +20,13 @@ func (s *Server) listHandle(w http.ResponseWriter, r *http.Request) error {
 	w.Header().Set("Content-Type", "application/json")
 
 	//path := r.FormValue("path")
-	path, err := url.QueryUnescape(strings.Trim(r.RequestURI, "/api/list/?path="))
+	//path, err := url.QueryUnescape(strings.Trim(r.RequestURI, "/api/list/?path="))
+	params, err := url.ParseQuery(r.URL.RawQuery)
 	if err != nil {
 		return apperror.ErrCantParseUrlParams
 	}
-	currentPath := s.Directory + path
+	path := strings.Join(params["path"], "")
+	currentPath := fmt.Sprintf("%s%s", s.Directory, path)
 	files, err := ioutil.ReadDir(currentPath)
 	if err != nil {
 		return apperror.ErrPathNotFound

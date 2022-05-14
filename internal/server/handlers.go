@@ -29,11 +29,13 @@ func (s *Server) Init(conf Config) {
 
 func (s *Server) fileHandler(w http.ResponseWriter, r *http.Request) error {
 	//filename := r.URL.Path[1:len(r.URL.Path)]
-	filename, err := url.QueryUnescape(strings.TrimLeft(r.RequestURI, "/video/?path="))
+	//filename, err := url.QueryUnescape(strings.TrimLeft(r.RequestURI, "/video/?path="))
+	params, err := url.ParseQuery(r.URL.RawQuery)
 	if err != nil {
 		return apperror.ErrCantParseUrlParams
 	}
-	fullPath := fmt.Sprintf("%s%s", s.Directory, filename)
+	path := strings.Join(params["path"], "")
+	fullPath := fmt.Sprintf("%s%s", s.Directory, path)
 	http.ServeFile(w, r, fullPath)
 	return nil
 }
