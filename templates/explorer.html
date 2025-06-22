@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/static/js/storage.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: gray;
+            font-family: Courier, monospace;
+            font-size: 16px;
+        }
+
+        a {
+            text-decoration: none;
+            color: whitesmoke;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style-type: none;
+            margin: 5px 0;
+            padding: 12px;
+            /* border: solid 1px gray;
+            border-radius: 5px; */
+            border-bottom: solid 1px gray;
+        }
+
+        progress {
+            width: 100%;
+            border-radius: 2px;
+            color: green;
+        }
+
+        .btn {
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <ul>
+            {{ range .List }}
+            {{ if .IsDir }}
+            <a href="?path={{ urldecode .Path }}">
+                <li>{{ .Name }}</li>
+            </a>
+            {{ else }}
+            <li>
+                <a href='/player?file=/files/{{ urldecode .Path }}'>
+                    <span>{{ .Name }}</span> <span>({{ .Size }}MB)</span>
+                </a>
+                {{ if and .IsAviConver (not .Converting) }}
+                <button class="btn" name="convertToMP4" data-from="{{ .Path }}">toMP4</button>
+                {{ end }}
+                {{ if .Converting }}
+                converting...
+                {{ end }}
+                {{ if .Accessible }}
+                <br><progress data-file="/files/{{ urldecode .Path }}" value="0"></progress>
+                {{ end }}
+            </li>
+            {{ end }}
+            {{ end }}
+        </ul>
+    </main>
+    <script>
+        function preloadProgress() {
+            const progresses = document.querySelectorAll("progress")
+            for (var i = 0; i < progresses.length; i++) {
+                const file = progresses[i].dataset['file']
+                const info = getInfo(file)
+                if (info?.isEnded) {
+                    progresses[i].value = 100
+                    progresses[i].max = 100
+                } else {
+                    progresses[i].value = info?.current ? info.current : 0
+                    progresses[i].max = info?.max ? info.max : 0
+                }
+            }
+        }
+        function handlerConverterToMP4(e) {
+            const from = e.target.dataset['from']
+            console.log(from)
+            fetch("/api/v0/convert/avitomp4", {
+                method: "POST",
+                body: JSON.stringify({
+                    from: from
+                })
+            }).then(res => {
+                if (res.status == 200) document.location.reload()
+            })
+        }
+        function preloadConverter() {
+            const btns = document.querySelectorAll('[name="convertToMP4"]')
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].addEventListener("click", handlerConverterToMP4)
+            }
+        }
+
+        preloadProgress()
+        preloadConverter()
+    </script>
+</body>
+
+</html>

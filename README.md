@@ -1,15 +1,12 @@
-# simple-media-server
-Open in your browser and watch the video from your media server
+# SimpeMediaServer
 
-## start
+Play video and save progress
++ convert avi to mp4
 
-- configure conf.json
-- run main
-- open in a browser
+open in browser http://{ip-pc}:9010
 
-## build
+# enviroment variables
+HTTP_ADDRESS=0.0.0.0:9010
 
-- ./frontend *yarn builds*
-- ./build.bat
-- copy from ./build in your directory
-- create conf.json in your directory and configure
+# prepare
+- install ffmpeg - by converter
